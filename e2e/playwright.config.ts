@@ -5,16 +5,18 @@ export default defineConfig({
   fullyParallel: true,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:5173",
+    baseURL: "http://localhost:4000",
     trace: "on-first-retry",
   },
   webServer: {
-    command: "npm run dev --workspace client",
-    url: "http://localhost:5173",
+    command: "npm run build && npm run start --workspace server",
     cwd: "..",
+    url: "http://localhost:4000/health",
     reuseExistingServer: !process.env.CI,
+    env: {
+      SQLITE_PATH: ":memory:",
+      PORT: "4000",
+    },
   },
-  projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
-  ],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });

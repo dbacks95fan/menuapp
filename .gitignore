@@ -8,3 +8,9 @@ coverage/
 playwright-report/
 test-results/
 .DS_Store
+server/data/
+/data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm

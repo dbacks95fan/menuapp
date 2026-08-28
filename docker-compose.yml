@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${HTTP_PORT:-4000}:4000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
