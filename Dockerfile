@@ -1,5 +1,8 @@
 FROM node:24-alpine AS build
 WORKDIR /app
+# e2e's @playwright/test devDependency auto-downloads ~400MB of browser
+# binaries on install; the production image never runs e2e tests, so skip it.
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 COPY package.json package-lock.json ./
 COPY client/package.json client/package.json
 COPY server/package.json server/package.json
