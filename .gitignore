@@ -14,3 +14,6 @@ server/data/
 *.db-journal
 *.db-wal
 *.db-shm
+
+# Coding Agent v0.1 run artifacts (evidence/audit) — local-only for now.
+.agent/
