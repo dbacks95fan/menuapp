@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getRecipes, type Recipe } from "../lib/api";
 
 export function RecipeLibrary() {
@@ -13,7 +14,16 @@ export function RecipeLibrary() {
 
   if (error) return <p role="alert">Failed to load recipes: {error}</p>;
   if (!recipes) return <p>Loading recipes…</p>;
-  if (recipes.length === 0) return <p>No recipes yet. Add one to get started.</p>;
+  if (recipes.length === 0) {
+    return (
+      <div className="empty-state">
+        <p>Your recipe library is empty. You haven&apos;t added any recipes yet.</p>
+        <Link className="empty-state-action" to="/add-recipe">
+          Add your first recipe
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <ul className="recipe-list">
