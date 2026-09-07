@@ -16,4 +16,11 @@ server/data/
 *.db-shm
 
 # Coding Agent v0.1 run artifacts (evidence/audit) — local-only for now.
-.agent/
+# Ignore the contents rather than the directory itself, so the negation below can
+# take effect: git does not descend into an excluded directory.
+.agent/*
+
+# Agent-owned SDLC artifacts (frozen intent, spec, plan, work contract) are the
+# durable versioned record of a work item, not scratch. They are tracked so each
+# stage can commit its output with a plain `git add`.
+!.agent/work/
