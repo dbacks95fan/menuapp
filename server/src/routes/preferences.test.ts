@@ -18,4 +18,10 @@ describe("preferences API", () => {
       expect.arrayContaining([expect.objectContaining({ key: "milk-brand", value: "Oat Milk Co" })]),
     );
   });
+
+  it("rejects a preference with a missing or non-string value", async () => {
+    const app = createApp();
+    expect((await request(app).put("/api/preferences/x").send({})).status).toBe(400);
+    expect((await request(app).put("/api/preferences/x").send({ value: 42 })).status).toBe(400);
+  });
 });

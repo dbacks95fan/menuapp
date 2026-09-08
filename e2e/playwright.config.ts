@@ -16,6 +16,7 @@ export default defineConfig({
     env: {
       SQLITE_PATH: ":memory:",
       PORT: "4000",
+      NODE_ENV: "production",
     },
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],

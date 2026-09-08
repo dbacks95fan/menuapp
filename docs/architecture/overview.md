@@ -41,9 +41,23 @@ recipes(id, name, ingredients JSON-encoded-array, created_at)
 preferences(key, value, updated_at)
 ```
 
-No migration tool yet — schema changes are additive `CREATE TABLE IF NOT EXISTS` /
-manual `ALTER TABLE` in `server/src/db/index.ts`. Revisit this once the schema
-needs a real change, not preemptively.
+Schema changes are ordered SQL files under `server/src/db/migrations/`
+(`NNN_name.sql`), applied once each by `runMigrations()` in
+`server/src/db/migrate.ts` and tracked in a `schema_migrations` table. The build
+copies the `.sql` files into `dist/` (`server/scripts/copy-migrations.mjs`). Add
+a new numbered file; never edit an applied one.
+
+`server/src/db/migrate-legacy-db.ts` is a separate one-off startup shim that
+renames a pre-MealFlow `menuapp.db` to the configured path (see
+`docs/decisions/0002-rename-to-mealflow.md`).
+
+## Cross-cutting server middleware
+
+`server/src/app.ts` wires, in order: `helmet` (security headers, CSP), optional
+CORS (`CORS_ORIGINS`), `express.json` with a 1 MB limit, `pino-http` request
+logging, and `express-rate-limit` on `/api`. Unmatched `/api` paths get a JSON
+404; a terminal error handler returns safe error bodies. Env is parsed and
+validated once in `server/src/config.ts` (zod). See `SECURITY.md`.
 
 ## Known constraints future work must respect
 
