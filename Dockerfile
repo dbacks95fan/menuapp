@@ -20,7 +20,7 @@ COPY --from=build /app/client/dist ../client/dist
 RUN npm install --omit=dev
 
 ENV PORT=4000
-ENV SQLITE_PATH=/app/data/menuapp.db
+ENV SQLITE_PATH=/app/data/mealflow.db
 VOLUME ["/app/data"]
 EXPOSE 4000
 

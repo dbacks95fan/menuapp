@@ -5,5 +5,5 @@ const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 const app = createApp();
 
 app.listen(port, () => {
-  console.log(`menuapp-server listening on port ${port}`);
+  console.log(`mealflow-server listening on port ${port}`);
 });

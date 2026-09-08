@@ -1,14 +1,16 @@
 import { mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 import type { DatabaseSync as DatabaseSyncType } from "node:sqlite";
+import { migrateLegacyDatabase } from "./migrate-legacy-db.js";
 
 const { DatabaseSync } = process.getBuiltinModule("node:sqlite") as {
   DatabaseSync: typeof DatabaseSyncType;
 };
 
-const dbPath = process.env.SQLITE_PATH ?? (process.env.NODE_ENV === "test" ? ":memory:" : "./data/menuapp.db");
+const dbPath = process.env.SQLITE_PATH ?? (process.env.NODE_ENV === "test" ? ":memory:" : "./data/mealflow.db");
 if (dbPath !== ":memory:") {
   mkdirSync(dirname(dbPath), { recursive: true });
+  migrateLegacyDatabase(dbPath);
 }
 
 export const db = new DatabaseSync(dbPath);

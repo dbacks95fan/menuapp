@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="app-shell">
       <header>
-        <h1>Menu App</h1>
+        <h1>MealFlow</h1>
         <NavBar />
       </header>
       <main>
