@@ -1,8 +1,10 @@
+// ABOUTME: App shell and client routes.
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { NavBar } from "./components/NavBar";
-import { AddRecipe } from "./pages/AddRecipe";
 import { Groceries } from "./pages/Groceries";
+import { RecipeDetail } from "./pages/RecipeDetail";
+import { RecipeForm } from "./pages/RecipeForm";
 import { RecipeLibrary } from "./pages/RecipeLibrary";
 
 function App() {
@@ -15,7 +17,9 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<RecipeLibrary />} />
-          <Route path="/add-recipe" element={<AddRecipe />} />
+          <Route path="/recipes/new" element={<RecipeForm />} />
+          <Route path="/recipes/:id" element={<RecipeDetail />} />
+          <Route path="/recipes/:id/edit" element={<RecipeForm />} />
           <Route path="/groceries" element={<Groceries />} />
         </Routes>
       </main>

@@ -11,7 +11,7 @@ test.describe("navigation", () => {
     await expect(recipesLink).toHaveClass(/active/);
 
     await addRecipeLink.click();
-    await expect(page).toHaveURL(/\/add-recipe$/);
+    await expect(page).toHaveURL(/\/recipes\/new$/);
     await expect(addRecipeLink).toHaveClass(/active/);
     await expect(recipesLink).not.toHaveClass(/active/);
 
@@ -35,6 +35,6 @@ test.describe("navigation", () => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto("/");
     await page.getByRole("link", { name: "Add Recipe" }).click();
-    await expect(page).toHaveURL(/\/add-recipe$/);
+    await expect(page).toHaveURL(/\/recipes\/new$/);
   });
 });

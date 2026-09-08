@@ -78,7 +78,47 @@ describe("runMigrations", () => {
     runMigrations(db);
 
     expect(tableNames(db)).toEqual(
-      expect.arrayContaining(["recipes", "preferences", "schema_migrations"]),
+      expect.arrayContaining([
+        "recipes",
+        "preferences",
+        "ingredients",
+        "household",
+        "schema_migrations",
+      ]),
     );
+    expect(db.prepare("SELECT id FROM household").all()).toEqual([{ id: 1 }]);
+  });
+
+  it("carries legacy JSON-array ingredients into the ingredients table (002)", () => {
+    const db = new DatabaseSync(":memory:");
+    // Simulate a pre-002 database: apply only the baseline schema.
+    db.exec(
+      "CREATE TABLE recipes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, " +
+        "ingredients TEXT NOT NULL, created_at TEXT NOT NULL DEFAULT (datetime('now')))",
+    );
+    db.exec(
+      "CREATE TABLE schema_migrations (version TEXT PRIMARY KEY, applied_at TEXT NOT NULL DEFAULT (datetime('now')))",
+    );
+    db.exec("INSERT INTO schema_migrations (version) VALUES ('001_init.sql')");
+    db.prepare("INSERT INTO recipes (name, ingredients) VALUES (?, ?)").run(
+      "Legacy Pancakes",
+      JSON.stringify(["2 cups flour", "2 eggs", "milk"]),
+    );
+
+    runMigrations(db);
+
+    const rows = db
+      .prepare(
+        "SELECT i.name, i.position FROM ingredients i JOIN recipes r ON r.id = i.recipe_id " +
+          "WHERE r.name = 'Legacy Pancakes' ORDER BY i.position",
+      )
+      .all();
+    expect(rows).toEqual([
+      { name: "2 cups flour", position: 0 },
+      { name: "2 eggs", position: 1 },
+      { name: "milk", position: 2 },
+    ]);
+    // Old column is gone.
+    expect(() => db.exec("SELECT ingredients FROM recipes")).toThrow();
   });
 });

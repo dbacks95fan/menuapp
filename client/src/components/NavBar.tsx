@@ -1,8 +1,9 @@
+// ABOUTME: Primary navigation. Active link is marked for the current route.
 import { NavLink } from "react-router-dom";
 
 const links = [
   { to: "/", label: "Recipes", end: true },
-  { to: "/add-recipe", label: "Add Recipe" },
+  { to: "/recipes/new", label: "Add Recipe" },
   { to: "/groceries", label: "Groceries" },
 ];
 

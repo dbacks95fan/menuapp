@@ -13,6 +13,7 @@ import { logger } from "./logger.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { notFoundHandler } from "./middleware/not-found.js";
 import { healthRouter } from "./routes/health.js";
+import { householdRouter } from "./routes/household.js";
 import { preferencesRouter } from "./routes/preferences.js";
 import { recipesRouter } from "./routes/recipes.js";
 
@@ -63,6 +64,7 @@ export function createApp() {
   app.use(healthRouter);
   app.use(recipesRouter);
   app.use(preferencesRouter);
+  app.use(householdRouter);
 
   app.use("/api", notFoundHandler);
 

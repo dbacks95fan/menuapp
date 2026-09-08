@@ -1,44 +1,107 @@
-export interface Recipe {
-  id: number;
-  name: string;
-  ingredients: string[];
-  createdAt: string;
-}
-
-export interface Preference {
-  key: string;
-  value: string;
-  updated_at: string;
-}
+// ABOUTME: Typed wrappers around the MealFlow JSON API. Pages call these, never
+// ABOUTME: fetch() directly.
 
 async function json<T>(res: Response): Promise<T> {
   if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
     throw new Error(body.error ?? `Request failed with status ${res.status}`);
   }
   return res.json() as Promise<T>;
 }
 
-export function getRecipes(): Promise<Recipe[]> {
-  return fetch("/api/recipes").then((res) => json(res));
+async function empty(res: Response): Promise<void> {
+  if (!res.ok) {
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    throw new Error(body.error ?? `Request failed with status ${res.status}`);
+  }
 }
 
-export function createRecipe(input: { name: string; ingredients: string[] }): Promise<Recipe> {
-  return fetch("/api/recipes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(input),
-  }).then((res) => json(res));
+const jsonHeaders = { "Content-Type": "application/json" };
+
+export interface Ingredient {
+  id: number;
+  position: number;
+  name: string;
+  quantity: number | null;
+  unit: string | null;
+  note: string | null;
+  raw: string | null;
 }
 
-export function getPreferences(): Promise<Preference[]> {
-  return fetch("/api/preferences").then((res) => json(res));
+export interface IngredientInput {
+  name: string;
+  quantity?: number | null;
+  unit?: string | null;
+  note?: string | null;
+  raw?: string;
 }
 
-export function setPreference(key: string, value: string): Promise<Preference> {
-  return fetch(`/api/preferences/${encodeURIComponent(key)}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ value }),
-  }).then((res) => json(res));
+export interface RecipeSummary {
+  id: number;
+  name: string;
+  servings: number | null;
+  tags: string[];
+  ingredientCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Recipe {
+  id: number;
+  name: string;
+  servings: number | null;
+  tags: string[];
+  ingredients: Ingredient[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RecipeInput {
+  name: string;
+  servings?: number | null;
+  tags?: string[];
+  ingredients: IngredientInput[];
+}
+
+export interface Household {
+  id: number;
+  name: string;
+  frysLocationId: string | null;
+  frysLocationName: string | null;
+  frysConnected: boolean;
+  frysConnectedAt: string | null;
+}
+
+export function listRecipes(): Promise<RecipeSummary[]> {
+  return fetch("/api/recipes").then((r) => json<RecipeSummary[]>(r));
+}
+
+export function getRecipe(id: number): Promise<Recipe> {
+  return fetch(`/api/recipes/${id}`).then((r) => json<Recipe>(r));
+}
+
+export function createRecipe(input: RecipeInput): Promise<Recipe> {
+  return fetch("/api/recipes", { method: "POST", headers: jsonHeaders, body: JSON.stringify(input) }).then(
+    (r) => json<Recipe>(r),
+  );
+}
+
+export function updateRecipe(id: number, input: RecipeInput): Promise<Recipe> {
+  return fetch(`/api/recipes/${id}`, { method: "PUT", headers: jsonHeaders, body: JSON.stringify(input) }).then(
+    (r) => json<Recipe>(r),
+  );
+}
+
+export function deleteRecipe(id: number): Promise<void> {
+  return fetch(`/api/recipes/${id}`, { method: "DELETE" }).then(empty);
+}
+
+export function getHousehold(): Promise<Household> {
+  return fetch("/api/household").then((r) => json<Household>(r));
+}
+
+export function renameHousehold(name: string): Promise<Household> {
+  return fetch("/api/household", { method: "PUT", headers: jsonHeaders, body: JSON.stringify({ name }) }).then(
+    (r) => json<Household>(r),
+  );
 }
