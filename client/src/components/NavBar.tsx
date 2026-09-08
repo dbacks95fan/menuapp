@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 const links = [
   { to: "/", label: "Recipes", end: true },
   { to: "/recipes/new", label: "Add Recipe" },
+  { to: "/this-week", label: "This Week" },
   { to: "/groceries", label: "Groceries" },
 ];
 

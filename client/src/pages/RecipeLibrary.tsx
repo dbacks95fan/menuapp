@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { listRecipes, type RecipeSummary } from "../lib/api";
+import { useSelections } from "../lib/useSelections";
 
 export function RecipeLibrary() {
   const [recipes, setRecipes] = useState<RecipeSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
+  const { isSelected, toggle } = useSelections();
 
   useEffect(() => {
     listRecipes()
@@ -61,9 +63,18 @@ export function RecipeLibrary() {
         <ul className="card-list">
           {filtered.map((recipe) => (
             <li key={recipe.id} className="card">
-              <Link to={`/recipes/${recipe.id}`}>
-                <h3>{recipe.name}</h3>
-              </Link>
+              <div className="toolbar">
+                <Link to={`/recipes/${recipe.id}`}>
+                  <h3>{recipe.name}</h3>
+                </Link>
+                <button
+                  type="button"
+                  aria-pressed={isSelected(recipe.id)}
+                  onClick={() => void toggle(recipe.id)}
+                >
+                  {isSelected(recipe.id) ? "In this week ✓" : "Add to this week"}
+                </button>
+              </div>
               <p className="muted">
                 {recipe.ingredientCount} ingredient{recipe.ingredientCount === 1 ? "" : "s"}
                 {recipe.servings ? ` · serves ${recipe.servings}` : ""}

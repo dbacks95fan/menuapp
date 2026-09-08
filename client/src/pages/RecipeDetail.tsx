@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { deleteRecipe, getRecipe, type Recipe } from "../lib/api";
 import { formatIngredient } from "../lib/format";
+import { useSelections } from "../lib/useSelections";
 
 export function RecipeDetail() {
   const { id } = useParams();
@@ -14,6 +15,7 @@ export function RecipeDetail() {
   const [error, setError] = useState<string | null>(null);
   const [scaleTo, setScaleTo] = useState<number | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const { isSelected, toggle } = useSelections();
 
   useEffect(() => {
     getRecipe(recipeId)
@@ -44,6 +46,13 @@ export function RecipeDetail() {
       <div className="toolbar">
         <h2>{recipe.name}</h2>
         <div className="toolbar">
+          <button
+            type="button"
+            aria-pressed={isSelected(recipe.id)}
+            onClick={() => void toggle(recipe.id)}
+          >
+            {isSelected(recipe.id) ? "Remove from this week" : "Add to this week"}
+          </button>
           <Link className="button" to={`/recipes/${recipe.id}/edit`}>
             Edit
           </Link>

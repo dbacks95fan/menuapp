@@ -6,6 +6,7 @@ import { Groceries } from "./pages/Groceries";
 import { RecipeDetail } from "./pages/RecipeDetail";
 import { RecipeForm } from "./pages/RecipeForm";
 import { RecipeLibrary } from "./pages/RecipeLibrary";
+import { ThisWeek } from "./pages/ThisWeek";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/recipes/new" element={<RecipeForm />} />
           <Route path="/recipes/:id" element={<RecipeDetail />} />
           <Route path="/recipes/:id/edit" element={<RecipeForm />} />
+          <Route path="/this-week" element={<ThisWeek />} />
           <Route path="/groceries" element={<Groceries />} />
         </Routes>
       </main>

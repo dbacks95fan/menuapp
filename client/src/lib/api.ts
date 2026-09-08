@@ -63,6 +63,14 @@ export interface RecipeInput {
   ingredients: IngredientInput[];
 }
 
+export interface Selection {
+  recipeId: number;
+  name: string;
+  servings: number | null;
+  ingredientCount: number;
+  addedAt: string;
+}
+
 export interface Household {
   id: number;
   name: string;
@@ -94,6 +102,26 @@ export function updateRecipe(id: number, input: RecipeInput): Promise<Recipe> {
 
 export function deleteRecipe(id: number): Promise<void> {
   return fetch(`/api/recipes/${id}`, { method: "DELETE" }).then(empty);
+}
+
+export function listSelections(): Promise<Selection[]> {
+  return fetch("/api/selections").then((r) => json<Selection[]>(r));
+}
+
+export function addSelection(recipeId: number): Promise<Selection[]> {
+  return fetch("/api/selections", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify({ recipeId }),
+  }).then((r) => json<Selection[]>(r));
+}
+
+export function removeSelection(recipeId: number): Promise<Selection[]> {
+  return fetch(`/api/selections/${recipeId}`, { method: "DELETE" }).then((r) => json<Selection[]>(r));
+}
+
+export function clearSelections(): Promise<void> {
+  return fetch("/api/selections", { method: "DELETE" }).then(empty);
 }
 
 export function getHousehold(): Promise<Household> {

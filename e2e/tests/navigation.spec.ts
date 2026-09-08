@@ -6,6 +6,7 @@ test.describe("navigation", () => {
 
     const recipesLink = page.getByRole("link", { name: "Recipes" });
     const addRecipeLink = page.getByRole("link", { name: "Add Recipe" });
+    const thisWeekLink = page.getByRole("link", { name: "This Week" });
     const groceriesLink = page.getByRole("link", { name: "Groceries" });
 
     await expect(recipesLink).toHaveClass(/active/);
@@ -14,6 +15,10 @@ test.describe("navigation", () => {
     await expect(page).toHaveURL(/\/recipes\/new$/);
     await expect(addRecipeLink).toHaveClass(/active/);
     await expect(recipesLink).not.toHaveClass(/active/);
+
+    await thisWeekLink.click();
+    await expect(page).toHaveURL(/\/this-week$/);
+    await expect(thisWeekLink).toHaveClass(/active/);
 
     await groceriesLink.click();
     await expect(page).toHaveURL(/\/groceries$/);
