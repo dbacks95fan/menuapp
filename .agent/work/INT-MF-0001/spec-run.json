@@ -1,0 +1,28 @@
+{
+  "runId": "504abd80-d1a8-46f6-9537-44a6497c7b91",
+  "workItem": "INT-MF-0001",
+  "productId": "MF",
+  "intentCommit": "102b89bd8e558e55d2bcdfb269c1e7ed9418fce3",
+  "frozenArtifactSha256": "2bd53cda889ba464e15f81f4d6c4c278a6e2b1fe83185d7ec5a81e7aa4b3be8e",
+  "intentContentSha256": "b705c395b3cd04d066ba004018a1fe986a8e31c8e43255daf3e1d43e40cd6af8",
+  "baseCommit": "920b86b1ccc439eb76c90fc47e54309407374194",
+  "branch": "work/INT-MF-0001",
+  "modelProvider": "claude",
+  "model": "claude-opus-5",
+  "agentVersion": "0.1.0",
+  "promptVersion": "spec-prompt-1",
+  "policyVersions": [],
+  "startedAt": "2026-09-08T04:46:28.928652+00:00",
+  "completedAt": "2026-09-08T04:51:35.259057+00:00",
+  "status": "spec_ready",
+  "specVersion": 1,
+  "usage": {
+    "inputTokens": 14,
+    "outputTokens": 23426,
+    "cacheReadTokens": 144405,
+    "cacheCreationTokens": 31369,
+    "totalTokens": 199214,
+    "turns": 22,
+    "costUsd": 0.8576757500000001
+  }
+}
