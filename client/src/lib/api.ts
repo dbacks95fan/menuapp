@@ -71,6 +71,38 @@ export interface Selection {
   addedAt: string;
 }
 
+export interface GroceryQuantity {
+  quantity: number | null;
+  unit: string | null;
+}
+
+export interface GroceryContribution {
+  recipeId: number;
+  recipeName: string;
+  quantity: number | null;
+  unit: string | null;
+}
+
+export interface GroceryLine {
+  name: string;
+  normalizedName: string;
+  quantities: GroceryQuantity[];
+  contributions: GroceryContribution[];
+  inPantry: boolean;
+}
+
+export interface GroceryList {
+  lines: GroceryLine[];
+  recipeCount: number;
+}
+
+export interface PantryItem {
+  id: number;
+  name: string;
+  normalizedName: string;
+  createdAt: string;
+}
+
 export interface Household {
   id: number;
   name: string;
@@ -122,6 +154,24 @@ export function removeSelection(recipeId: number): Promise<Selection[]> {
 
 export function clearSelections(): Promise<void> {
   return fetch("/api/selections", { method: "DELETE" }).then(empty);
+}
+
+export function getGroceryList(): Promise<GroceryList> {
+  return fetch("/api/grocery-list").then((r) => json<GroceryList>(r));
+}
+
+export function listPantry(): Promise<PantryItem[]> {
+  return fetch("/api/pantry").then((r) => json<PantryItem[]>(r));
+}
+
+export function addPantryItem(name: string): Promise<PantryItem[]> {
+  return fetch("/api/pantry", { method: "POST", headers: jsonHeaders, body: JSON.stringify({ name }) }).then(
+    (r) => json<PantryItem[]>(r),
+  );
+}
+
+export function removePantryItem(id: number): Promise<PantryItem[]> {
+  return fetch(`/api/pantry/${id}`, { method: "DELETE" }).then((r) => json<PantryItem[]>(r));
 }
 
 export function getHousehold(): Promise<Household> {

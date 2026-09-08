@@ -20,6 +20,7 @@ export default defineConfig({
       SQLITE_PATH: ":memory:",
       PORT: "4000",
       NODE_ENV: "production",
+      MEALFLOW_ENABLE_TEST_RESET: "1",
     },
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],

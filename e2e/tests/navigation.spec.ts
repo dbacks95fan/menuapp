@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { resetApp } from "../helpers";
+
+test.beforeEach(async ({ request }) => resetApp(request));
 
 test.describe("navigation", () => {
   test("moves between every primary section and marks the active one", async ({ page }) => {

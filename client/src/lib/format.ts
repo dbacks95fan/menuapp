@@ -45,3 +45,13 @@ export function formatIngredient(ingredient: DisplayIngredient, scale = 1): stri
   const line = [quantity, ingredient.unit ?? "", ingredient.name].filter(Boolean).join(" ");
   return ingredient.note ? `${line} (${ingredient.note})` : line;
 }
+
+export function formatAmount(quantity: number | null, unit: string | null): string {
+  if (quantity == null) return unit ?? "some";
+  return [formatQuantity(quantity), unit ?? ""].filter(Boolean).join(" ");
+}
+
+export function formatAmounts(quantities: { quantity: number | null; unit: string | null }[]): string {
+  if (quantities.length === 0) return "";
+  return quantities.map((q) => formatAmount(q.quantity, q.unit)).join(" + ");
+}

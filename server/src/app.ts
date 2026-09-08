@@ -12,11 +12,14 @@ import { config } from "./config.js";
 import { logger } from "./logger.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { notFoundHandler } from "./middleware/not-found.js";
+import { groceryListRouter } from "./routes/grocery-list.js";
 import { healthRouter } from "./routes/health.js";
 import { householdRouter } from "./routes/household.js";
+import { pantryRouter } from "./routes/pantry.js";
 import { preferencesRouter } from "./routes/preferences.js";
 import { recipesRouter } from "./routes/recipes.js";
 import { selectionsRouter } from "./routes/selections.js";
+import { testSupportEnabled, testSupportRouter } from "./routes/test-support.js";
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
 const clientDist = join(currentDir, "..", "..", "client", "dist");
@@ -67,6 +70,11 @@ export function createApp() {
   app.use(preferencesRouter);
   app.use(householdRouter);
   app.use(selectionsRouter);
+  app.use(pantryRouter);
+  app.use(groceryListRouter);
+  if (testSupportEnabled) {
+    app.use(testSupportRouter);
+  }
 
   app.use("/api", notFoundHandler);
 
