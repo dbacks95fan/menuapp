@@ -84,6 +84,23 @@ button.danger {
   opacity: 0.6;
 }
 
+.notice {
+  border: 1px solid #30ced8;
+  background: #eafcfd;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.notice.warn {
+  border-color: #a71930;
+  background: #fdecef;
+}
+
+select {
+  font: inherit;
+  padding: 0.3rem;
+}
+
 .muted {
   color: #666;
   font-size: 0.9rem;

@@ -6,6 +6,7 @@ const links = [
   { to: "/recipes/new", label: "Add Recipe" },
   { to: "/this-week", label: "This Week" },
   { to: "/groceries", label: "Groceries" },
+  { to: "/settings", label: "Settings" },
 ];
 
 export function NavBar() {

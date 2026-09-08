@@ -115,6 +115,53 @@ export interface PantryItem {
   createdAt: string;
 }
 
+export interface FrysStatus {
+  configured: boolean;
+  connected: boolean;
+  connectedAt: string | null;
+  locationId: string | null;
+  locationName: string | null;
+}
+
+export interface FrysLocation {
+  locationId: string;
+  name: string;
+  address: string;
+}
+
+export interface FrysProduct {
+  productId: string;
+  upc: string;
+  description: string;
+  brand: string | null;
+  size: string | null;
+  price: number | null;
+  imageUrl: string | null;
+}
+
+export interface FrysMatchLine {
+  normalizedName: string;
+  name: string;
+  quantities: GroceryQuantity[];
+  neededQuantity: number;
+  remembered: boolean;
+  chosen: FrysProduct | null;
+  options: FrysProduct[];
+  unmatched: boolean;
+}
+
+export interface FrysMatch {
+  currency: string;
+  total: number;
+  lines: FrysMatchLine[];
+}
+
+export interface FrysCartResult {
+  added: string[];
+  failed: { name: string; reason: string }[];
+  allSucceeded: boolean;
+}
+
 export interface Household {
   id: number;
   name: string;
@@ -204,6 +251,55 @@ export function removePantryItem(id: number): Promise<PantryItem[]> {
 
 export function getHousehold(): Promise<Household> {
   return fetch("/api/household").then((r) => json<Household>(r));
+}
+
+export function getFrysStatus(): Promise<FrysStatus> {
+  return fetch("/api/frys/status").then((r) => json<FrysStatus>(r));
+}
+
+export function getFrysAuthorizeUrl(): Promise<{ url: string }> {
+  return fetch("/api/frys/authorize-url").then((r) => json<{ url: string }>(r));
+}
+
+export function disconnectFrys(): Promise<void> {
+  return fetch("/api/frys/disconnect", { method: "POST" }).then(empty);
+}
+
+export function findFrysLocations(zip: string): Promise<FrysLocation[]> {
+  return fetch(`/api/frys/locations?zip=${encodeURIComponent(zip)}`).then((r) => json<FrysLocation[]>(r));
+}
+
+export function setFrysLocation(locationId: string, name: string): Promise<unknown> {
+  return fetch("/api/frys/location", {
+    method: "PUT",
+    headers: jsonHeaders,
+    body: JSON.stringify({ locationId, name }),
+  }).then((r) => json(r));
+}
+
+export function getFrysMatch(): Promise<FrysMatch> {
+  return fetch("/api/frys/match").then((r) => json<FrysMatch>(r));
+}
+
+export function saveFrysMatch(
+  normalizedName: string,
+  product: { productId: string; upc?: string; brand?: string | null; size?: string | null; description?: string },
+): Promise<unknown> {
+  return fetch(`/api/frys/match/${encodeURIComponent(normalizedName)}`, {
+    method: "PUT",
+    headers: jsonHeaders,
+    body: JSON.stringify(product),
+  }).then((r) => json(r));
+}
+
+export function submitFrysCart(
+  items: { upc: string; quantity: number; name: string }[],
+): Promise<FrysCartResult> {
+  return fetch("/api/frys/cart", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify({ items }),
+  }).then((r) => json<FrysCartResult>(r));
 }
 
 export function renameHousehold(name: string): Promise<Household> {

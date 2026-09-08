@@ -83,6 +83,9 @@ describe("runMigrations", () => {
         "preferences",
         "ingredients",
         "household",
+        "meal_selections",
+        "pantry_items",
+        "ingredient_product_map",
         "schema_migrations",
       ]),
     );

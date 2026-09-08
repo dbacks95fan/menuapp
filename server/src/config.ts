@@ -12,6 +12,15 @@ const EnvSchema = z.object({
   // Empty (the default) means "no CORS" — correct for the single-origin prod deploy.
   CORS_ORIGINS: z.string().default(""),
   LOG_LEVEL: z.enum(LOG_LEVELS).optional(),
+
+  // AES-256 key (hex/base64/utf8, >= 32 bytes) for encrypting the stored Fry's
+  // token. Required only to connect a Fry's account.
+  MEALFLOW_SECRET_KEY: z.string().min(1).optional(),
+  // Fry's / Kroger developer app credentials + endpoints.
+  KROGER_CLIENT_ID: z.string().min(1).optional(),
+  KROGER_CLIENT_SECRET: z.string().min(1).optional(),
+  KROGER_API_BASE: z.string().url().default("https://api.kroger.com/v1"),
+  KROGER_REDIRECT_URI: z.string().url().default("http://localhost:4000/api/frys/callback"),
 });
 
 const parsed = EnvSchema.safeParse(process.env);
@@ -36,6 +45,14 @@ export const config = Object.freeze({
     .map((origin) => origin.trim())
     .filter(Boolean),
   logLevel: env.LOG_LEVEL ?? (isTest ? "silent" : "info"),
+  secretKey: env.MEALFLOW_SECRET_KEY ?? null,
+  kroger: {
+    clientId: env.KROGER_CLIENT_ID ?? null,
+    clientSecret: env.KROGER_CLIENT_SECRET ?? null,
+    apiBase: env.KROGER_API_BASE.replace(/\/$/, ""),
+    redirectUri: env.KROGER_REDIRECT_URI,
+    configured: Boolean(env.KROGER_CLIENT_ID && env.KROGER_CLIENT_SECRET && env.MEALFLOW_SECRET_KEY),
+  },
 });
 
 export type Config = typeof config;

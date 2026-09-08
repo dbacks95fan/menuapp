@@ -11,6 +11,7 @@ testSupportRouter.post("/api/test/reset", (_req, res) => {
   db.exec(`
     DELETE FROM meal_selections;
     DELETE FROM pantry_items;
+    DELETE FROM ingredient_product_map;
     DELETE FROM ingredients;
     DELETE FROM recipes;
     UPDATE household
