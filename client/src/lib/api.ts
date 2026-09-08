@@ -63,6 +63,18 @@ export interface RecipeInput {
   ingredients: IngredientInput[];
 }
 
+export interface RecipeDraft {
+  name: string;
+  servings: number | null;
+  ingredients: {
+    name: string;
+    quantity: number | null;
+    unit: string | null;
+    note: string | null;
+    raw: string | null;
+  }[];
+}
+
 export interface Selection {
   recipeId: number;
   name: string;
@@ -154,6 +166,22 @@ export function removeSelection(recipeId: number): Promise<Selection[]> {
 
 export function clearSelections(): Promise<void> {
   return fetch("/api/selections", { method: "DELETE" }).then(empty);
+}
+
+export function importText(text: string): Promise<RecipeDraft> {
+  return fetch("/api/import/text", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify({ text }),
+  }).then((r) => json<RecipeDraft>(r));
+}
+
+export function importUrl(url: string): Promise<RecipeDraft> {
+  return fetch("/api/import/url", {
+    method: "POST",
+    headers: jsonHeaders,
+    body: JSON.stringify({ url }),
+  }).then((r) => json<RecipeDraft>(r));
 }
 
 export function getGroceryList(): Promise<GroceryList> {

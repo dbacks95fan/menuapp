@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { NavBar } from "./components/NavBar";
 import { Groceries } from "./pages/Groceries";
+import { ImportRecipe } from "./pages/ImportRecipe";
 import { RecipeDetail } from "./pages/RecipeDetail";
 import { RecipeForm } from "./pages/RecipeForm";
 import { RecipeLibrary } from "./pages/RecipeLibrary";
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           <Route path="/" element={<RecipeLibrary />} />
           <Route path="/recipes/new" element={<RecipeForm />} />
+          <Route path="/recipes/import" element={<ImportRecipe />} />
           <Route path="/recipes/:id" element={<RecipeDetail />} />
           <Route path="/recipes/:id/edit" element={<RecipeForm />} />
           <Route path="/this-week" element={<ThisWeek />} />

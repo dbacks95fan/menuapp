@@ -14,6 +14,7 @@ import { errorHandler } from "./middleware/error-handler.js";
 import { notFoundHandler } from "./middleware/not-found.js";
 import { groceryListRouter } from "./routes/grocery-list.js";
 import { healthRouter } from "./routes/health.js";
+import { importRouter } from "./routes/import.js";
 import { householdRouter } from "./routes/household.js";
 import { pantryRouter } from "./routes/pantry.js";
 import { preferencesRouter } from "./routes/preferences.js";
@@ -72,6 +73,7 @@ export function createApp() {
   app.use(selectionsRouter);
   app.use(pantryRouter);
   app.use(groceryListRouter);
+  app.use(importRouter);
   if (testSupportEnabled) {
     app.use(testSupportRouter);
   }

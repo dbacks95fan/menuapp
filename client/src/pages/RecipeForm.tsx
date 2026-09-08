@@ -1,12 +1,13 @@
 // ABOUTME: Create or edit a recipe — name, servings, tags, and a dynamic list
 // ABOUTME: of ingredient rows (name / quantity / unit / note).
 import { useEffect, useState, type FormEvent } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   createRecipe,
   getRecipe,
   updateRecipe,
   type IngredientInput,
+  type RecipeDraft,
   type RecipeInput,
 } from "../lib/api";
 
@@ -19,15 +20,29 @@ interface Row {
 
 const blankRow: Row = { name: "", quantity: "", unit: "", note: "" };
 
+function draftToRows(draft: RecipeDraft): Row[] {
+  if (draft.ingredients.length === 0) return [{ ...blankRow }];
+  return draft.ingredients.map((i) => ({
+    name: i.name,
+    quantity: i.quantity != null ? String(i.quantity) : "",
+    unit: i.unit ?? "",
+    note: i.note ?? "",
+  }));
+}
+
 export function RecipeForm() {
   const { id } = useParams();
   const editing = id != null;
   const navigate = useNavigate();
+  const location = useLocation();
+  const draft = (location.state as { draft?: RecipeDraft } | null)?.draft ?? null;
 
-  const [name, setName] = useState("");
-  const [servings, setServings] = useState("");
+  const [name, setName] = useState(() => draft?.name ?? "");
+  const [servings, setServings] = useState(() =>
+    draft?.servings != null ? String(draft.servings) : "",
+  );
   const [tags, setTags] = useState("");
-  const [rows, setRows] = useState<Row[]>([{ ...blankRow }]);
+  const [rows, setRows] = useState<Row[]>(() => (draft ? draftToRows(draft) : [{ ...blankRow }]));
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 

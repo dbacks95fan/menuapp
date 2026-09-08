@@ -35,9 +35,14 @@ export function RecipeLibrary() {
     return (
       <div className="empty-state">
         <p>Your recipe library is empty. You haven&apos;t added any recipes yet.</p>
-        <Link className="button" to="/recipes/new">
-          Add your first recipe
-        </Link>
+        <div className="toolbar">
+          <Link className="button" to="/recipes/new">
+            Add your first recipe
+          </Link>
+          <Link className="button" to="/recipes/import">
+            Import a recipe
+          </Link>
+        </div>
       </div>
     );
   }
@@ -54,6 +59,9 @@ export function RecipeLibrary() {
         />
         <Link className="button" to="/recipes/new">
           Add recipe
+        </Link>
+        <Link className="button" to="/recipes/import">
+          Import
         </Link>
       </div>
 
