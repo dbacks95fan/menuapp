@@ -6,6 +6,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { config } from "../config.js";
 import { db } from "../db/index.js";
+import { logger } from "../logger.js";
 import {
   clearFrysTokens,
   connectWithCode,
@@ -77,7 +78,7 @@ krogerRouter.get("/api/frys/authorize-url", (_req, res) => {
   res.json({ url: buildAuthorizeUrl(newState()) });
 });
 
-krogerRouter.get("/api/frys/callback", async (req, res, next) => {
+krogerRouter.get("/api/frys/callback", async (req, res) => {
   const code = typeof req.query.code === "string" ? req.query.code : "";
   const state = typeof req.query.state === "string" ? req.query.state : "";
   if (!code || !consumeState(state)) {
@@ -88,11 +89,11 @@ krogerRouter.get("/api/frys/callback", async (req, res, next) => {
     await connectWithCode(code);
     res.redirect("/settings?frys=connected");
   } catch (err) {
-    if (err instanceof KrogerError) {
-      res.redirect("/settings?frys=error");
-      return;
-    }
-    next(err);
+    // This request renders in the user's browser mid-OAuth. Any failure —
+    // a Kroger error, or a network/DNS failure reaching Kroger — should land
+    // them back on Settings with an error, never a raw 500.
+    logger.error({ err }, "Fry's connect callback failed");
+    res.redirect("/settings?frys=error");
   }
 });
 
