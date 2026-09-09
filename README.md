@@ -65,6 +65,12 @@ sudo docker run --rm -v "$PWD/data":/data alpine chown -R 1000:1000 /data
 If `npm ci` stalls during the build with `EAI_AGAIN` (DNS), build with host networking:
 `sudo docker build --network=host -t mealflow:latest . && sudo docker-compose -p mealflow up -d`.
 
+If a running container has **no outbound network** (DNS and pings fail from inside, but work
+on the host), DSM has flushed Docker's bridge NAT rules. Fix it by restarting the Docker
+package (Package Center → Docker → Stop, then Start) or rebooting the NAS. As a stopgap, add
+`network_mode: host` to the `app` service (and drop the `ports:` block — host mode ignores it;
+the app binds `PORT` directly on the host).
+
 ### Connecting Fry's (Kroger)
 
 Fry's/Kroger cart integration is inert until `MEALFLOW_SECRET_KEY`, `KROGER_CLIENT_ID`, and
