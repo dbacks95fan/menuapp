@@ -45,6 +45,23 @@ Copy this repo (or just `Dockerfile`, `docker-compose.yml`, and the source) onto
 that directory run `docker compose up -d --build` (via SSH, or Container Manager's compose project
 import). Set `HTTP_PORT` to whatever port you want exposed on the DiskStation's LAN IP.
 
+On older DSM with the legacy **Docker** package (compose **v1**, Docker Engine 20.10), use the v1
+CLI and pin the project name:
+
+```
+HTTP_PORT=4000 sudo docker-compose -p mealflow up -d --build
+```
+
+The mounted `data/` directory must be writable by uid 1000 (the container runs as the non-root
+`node` user):
+
+```
+sudo docker run --rm -v "$PWD/data":/data alpine chown -R 1000:1000 /data
+```
+
+If `npm ci` stalls during the build with `EAI_AGAIN` (DNS), build with host networking:
+`sudo docker build --network=host -t mealflow:latest . && sudo docker-compose -p mealflow up -d`.
+
 ### Upgrading from Menu App
 
 The default SQLite filename changed from `menuapp.db` to `mealflow.db`. On first start, the server

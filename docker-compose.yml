@@ -1,5 +1,6 @@
-name: mealflow
-
+# No top-level `name:` — the Synology DiskStation's bundled docker-compose
+# (v1.28.x) rejects it. The project name is set with `-p mealflow` at the CLI;
+# the container is named explicitly below.
 services:
   app:
     build: .
