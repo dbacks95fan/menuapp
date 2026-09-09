@@ -1,4 +1,7 @@
 import { expect, test } from "@playwright/test";
+import { resetApp } from "../helpers";
+
+test.beforeEach(async ({ request }) => resetApp(request));
 
 test.describe("navigation", () => {
   test("moves between every primary section and marks the active one", async ({ page }) => {
@@ -6,14 +9,19 @@ test.describe("navigation", () => {
 
     const recipesLink = page.getByRole("link", { name: "Recipes" });
     const addRecipeLink = page.getByRole("link", { name: "Add Recipe" });
+    const thisWeekLink = page.getByRole("link", { name: "This Week" });
     const groceriesLink = page.getByRole("link", { name: "Groceries" });
 
     await expect(recipesLink).toHaveClass(/active/);
 
     await addRecipeLink.click();
-    await expect(page).toHaveURL(/\/add-recipe$/);
+    await expect(page).toHaveURL(/\/recipes\/new$/);
     await expect(addRecipeLink).toHaveClass(/active/);
     await expect(recipesLink).not.toHaveClass(/active/);
+
+    await thisWeekLink.click();
+    await expect(page).toHaveURL(/\/this-week$/);
+    await expect(thisWeekLink).toHaveClass(/active/);
 
     await groceriesLink.click();
     await expect(page).toHaveURL(/\/groceries$/);
@@ -35,6 +43,6 @@ test.describe("navigation", () => {
     await page.setViewportSize({ width: 375, height: 667 });
     await page.goto("/");
     await page.getByRole("link", { name: "Add Recipe" }).click();
-    await expect(page).toHaveURL(/\/add-recipe$/);
+    await expect(page).toHaveURL(/\/recipes\/new$/);
   });
 });

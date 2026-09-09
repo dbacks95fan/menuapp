@@ -1,71 +1,261 @@
+/* ABOUTME: Component styles for MealFlow, built on the tokens in index.css. */
+
 .app-shell {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 1.5rem;
-  font-family: system-ui, sans-serif;
+  padding: 1.25rem 1rem 3rem;
+}
+
+.app-shell > header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.app-shell > header h1 {
+  color: var(--mf-primary);
 }
 
 .nav-bar {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-bottom: 3px solid var(--mf-sand);
+  padding-bottom: 0.5rem;
 }
 
 .nav-link {
   text-decoration: none;
-  color: inherit;
-  padding: 0.25rem 0.5rem;
+  color: var(--mf-muted);
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.nav-link:hover {
+  color: var(--mf-text);
+  background: var(--mf-surface-2);
 }
 
 .nav-link.active {
-  font-weight: 700;
-  border-bottom: 2px solid #333;
+  color: var(--mf-on-primary);
+  background: var(--mf-primary);
 }
 
-.recipe-list,
-.grocery-list {
-  list-style: none;
-  padding: 0;
+.stack {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.recipe-card {
-  border: 1px solid #ddd;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.toolbar input[type="search"] {
+  flex: 1 1 12rem;
+}
+
+/* Buttons and button-styled links */
+button,
+.button {
+  display: inline-block;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--mf-border);
   border-radius: 8px;
+  background: var(--mf-surface);
+  color: var(--mf-text);
+  text-decoration: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover,
+.button:hover {
+  background: var(--mf-surface-2);
+}
+
+button[type="submit"],
+.button {
+  background: var(--mf-primary);
+  border-color: var(--mf-primary);
+  color: var(--mf-on-primary);
+}
+
+button[type="submit"]:hover,
+.button:hover {
+  background: var(--mf-red-strong);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.danger,
+button[aria-pressed="true"] {
+  border-color: var(--mf-primary);
+}
+
+button.danger {
+  color: var(--mf-primary);
+  background: var(--mf-surface);
+}
+
+button[aria-pressed="true"] {
+  background: var(--mf-teal-ink);
+  border-color: var(--mf-teal-ink);
+  color: #fff;
+}
+
+/* Cards / lists */
+.card-list,
+.ingredient-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ingredient-list {
+  gap: 0.35rem;
+}
+
+.card {
+  border: 1px solid var(--mf-border);
+  border-radius: var(--mf-radius);
   padding: 1rem;
+  background: var(--mf-surface);
+  box-shadow: var(--mf-shadow);
+}
+
+.card h3 {
+  margin: 0 0 0.25rem;
+}
+
+.card a {
+  text-decoration: none;
+  color: var(--mf-text);
+}
+
+.card a:hover h3 {
+  color: var(--mf-primary);
+}
+
+.card.muted-card {
+  opacity: 0.55;
+}
+
+.muted {
+  color: var(--mf-muted);
+  font-size: 0.9rem;
+}
+
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.tag {
+  background: var(--mf-sand);
+  color: var(--mf-ink);
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 
 .empty-state {
-  border: 1px dashed #ccc;
-  border-radius: 8px;
-  padding: 1.5rem;
+  border: 2px dashed var(--mf-border);
+  border-radius: var(--mf-radius);
+  padding: 2rem 1.5rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  background: var(--mf-surface);
 }
 
-.empty-state-action {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border: 1px solid #333;
-  border-radius: 6px;
-  text-decoration: none;
-  color: inherit;
-}
-
-.add-recipe-form {
+/* Forms */
+form label {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  max-width: 420px;
+  gap: 0.25rem;
+  max-width: 28rem;
+  font-weight: 600;
 }
 
-.add-recipe-form textarea {
-  font-family: inherit;
+form label input,
+form label textarea,
+form label select {
+  font-weight: 400;
+}
+
+.inline-field {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: none;
+  font-weight: 400;
+}
+
+.inline-field input[type="number"] {
+  width: 5rem;
+}
+
+fieldset {
+  border: 1px solid var(--mf-border);
+  border-radius: var(--mf-radius);
+  background: var(--mf-surface);
+}
+
+legend {
+  font-weight: 700;
+  padding: 0 0.4rem;
+}
+
+.ingredient-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.ingredient-row input {
+  flex: 1 1 6rem;
+  min-width: 0;
+}
+
+/* Notices / alerts */
+[role="alert"] {
+  color: var(--mf-primary);
+  font-weight: 600;
+}
+
+.notice {
+  border: 1px solid var(--mf-teal);
+  background: var(--mf-surface-2);
+  background: color-mix(in srgb, var(--mf-teal) 12%, var(--mf-surface));
+  border-radius: var(--mf-radius);
+  padding: 0.75rem 1rem;
+}
+
+.notice.warn {
+  border-color: var(--mf-primary);
+  background: var(--mf-surface-2);
+  background: color-mix(in srgb, var(--mf-primary) 10%, var(--mf-surface));
+}
+
+.notice ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.2rem;
 }

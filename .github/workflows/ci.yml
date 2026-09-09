@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -18,12 +21,30 @@ jobs:
 
       - run: npm ci
 
-      - run: npm run build
+      - name: Lint
+        run: npm run lint
 
-      - run: npm run test:server
+      - name: Typecheck
+        run: npm run typecheck
+
+      # Fails the build on a HIGH+ advisory in *production* dependencies (the
+      # deployed Docker image installs --omit=dev). Dev-tool advisories are
+      # tracked separately; see SECURITY.md.
+      - name: Audit production dependencies
+        run: npm run audit:prod
+
+      - name: Client unit tests
+        run: npm run test:client
+
+      - name: Build
+        run: npm run build
+
+      - name: Server unit tests
+        run: npm run test:server
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
         working-directory: e2e
 
-      - run: npm run test:e2e
+      - name: End-to-end tests
+        run: npm run test:e2e

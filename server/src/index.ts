@@ -1,9 +1,11 @@
+// ABOUTME: Server entrypoint — loads env, builds the app, starts listening.
 import "dotenv/config";
 import { createApp } from "./app.js";
+import { config } from "./config.js";
+import { logger } from "./logger.js";
 
-const port = process.env.PORT ? Number(process.env.PORT) : 4000;
 const app = createApp();
 
-app.listen(port, () => {
-  console.log(`menuapp-server listening on port ${port}`);
+app.listen(config.port, () => {
+  logger.info(`mealflow-server listening on port ${config.port}`);
 });

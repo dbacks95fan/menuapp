@@ -1,4 +1,4 @@
-# Menu App
+# MealFlow
 
 A self-hosted recipe / meal-planning app for the household: browse recipes, add new ones, and see a
 combined grocery list. Runs as a single Docker container (Express serves both the API and the built
@@ -19,7 +19,7 @@ npm run dev:server   # API on http://localhost:4000
 npm run dev:client   # client on http://localhost:5173 (proxies /api and /health to :4000)
 ```
 
-Server config (see `server/.env.example`): `PORT` (default 4000), `SQLITE_PATH` (default `./data/menuapp.db`).
+Server config (see `server/.env.example`): `PORT` (default 4000), `SQLITE_PATH` (default `./data/mealflow.db`).
 
 ## Testing
 
@@ -44,6 +44,15 @@ docker compose up -d --build
 Copy this repo (or just `Dockerfile`, `docker-compose.yml`, and the source) onto the NAS, then from
 that directory run `docker compose up -d --build` (via SSH, or Container Manager's compose project
 import). Set `HTTP_PORT` to whatever port you want exposed on the DiskStation's LAN IP.
+
+### Upgrading from Menu App
+
+The default SQLite filename changed from `menuapp.db` to `mealflow.db`. On first start, the server
+automatically renames a legacy `data/menuapp.db` (and its `-wal`/`-shm`/`-journal` sidecars) to the
+new name when no `mealflow.db` exists yet — no action needed for the default setup. If your
+deployment pins `SQLITE_PATH` to a path ending in `menuapp.db`, either keep that value (it still
+works) or rename the file yourself and update `SQLITE_PATH` while the container is stopped. See
+`docs/decisions/0002-rename-to-mealflow.md`.
 
 ## CI
 

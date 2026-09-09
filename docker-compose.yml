@@ -1,6 +1,10 @@
+name: mealflow
+
 services:
   app:
     build: .
+    image: mealflow:latest
+    container_name: mealflow
     ports:
       - "${HTTP_PORT:-4000}:4000"
     volumes:

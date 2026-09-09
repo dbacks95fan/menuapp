@@ -1,28 +1,111 @@
-import { useEffect, useState } from "react";
-import { getRecipes } from "../lib/api";
+// ABOUTME: Combined grocery list from the week's selected recipes — grouped,
+// ABOUTME: quantities combined, with an optional "hide what I already have" view
+// ABOUTME: and a per-line pantry toggle. Review here before sending to Fry's.
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  addPantryItem,
+  getGroceryList,
+  listPantry,
+  removePantryItem,
+  type GroceryList,
+  type PantryItem,
+} from "../lib/api";
+import { formatAmounts } from "../lib/format";
 
 export function Groceries() {
-  const [ingredients, setIngredients] = useState<string[] | null>(null);
+  const [list, setList] = useState<GroceryList | null>(null);
+  const [pantry, setPantry] = useState<PantryItem[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [hidePantry, setHidePantry] = useState(false);
 
-  useEffect(() => {
-    getRecipes()
-      .then((recipes) => {
-        const unique = Array.from(new Set(recipes.flatMap((r) => r.ingredients))).sort();
-        setIngredients(unique);
+  const refresh = useCallback(() => {
+    Promise.all([getGroceryList(), listPantry()])
+      .then(([groceryList, pantryItems]) => {
+        setList(groceryList);
+        setPantry(pantryItems);
       })
       .catch((err: Error) => setError(err.message));
   }, []);
 
-  if (error) return <p role="alert">Failed to load groceries: {error}</p>;
-  if (!ingredients) return <p>Loading groceries…</p>;
-  if (ingredients.length === 0) return <p>No ingredients yet — add a recipe first.</p>;
+  useEffect(refresh, [refresh]);
+
+  const pantryByNormalized = useMemo(
+    () => new Map(pantry.map((item) => [item.normalizedName, item.id])),
+    [pantry],
+  );
+
+  async function togglePantry(normalizedName: string, name: string) {
+    try {
+      const existingId = pantryByNormalized.get(normalizedName);
+      const next = existingId != null ? await removePantryItem(existingId) : await addPantryItem(name);
+      setPantry(next);
+      refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update the pantry");
+    }
+  }
+
+  if (error) return <p role="alert">{error}</p>;
+  if (!list) return <p>Loading grocery list…</p>;
+
+  if (list.recipeCount === 0) {
+    return (
+      <div className="empty-state">
+        <p>No recipes selected for the week yet.</p>
+        <p className="muted">
+          Add recipes to <Link to="/this-week">This Week</Link> to build a combined list.
+        </p>
+      </div>
+    );
+  }
+
+  const visible = hidePantry ? list.lines.filter((line) => !line.inPantry) : list.lines;
 
   return (
-    <ul className="grocery-list">
-      {ingredients.map((ingredient) => (
-        <li key={ingredient}>{ingredient}</li>
-      ))}
-    </ul>
+    <div className="stack">
+      <h2>Grocery list</h2>
+      <p className="muted">
+        From {list.recipeCount} recipe{list.recipeCount === 1 ? "" : "s"}. Review before sending to Fry’s.
+      </p>
+
+      <label className="inline-field">
+        <input
+          type="checkbox"
+          checked={hidePantry}
+          onChange={(e) => setHidePantry(e.target.checked)}
+        />
+        Hide items I already have
+      </label>
+
+      <ul className="card-list">
+        {visible.map((line) => (
+          <li key={line.normalizedName} className={line.inPantry ? "card muted-card" : "card"}>
+            <div className="toolbar">
+              <strong>{line.name}</strong>
+              <span>{formatAmounts(line.quantities)}</span>
+              <button
+                type="button"
+                aria-pressed={line.inPantry}
+                onClick={() => void togglePantry(line.normalizedName, line.name)}
+              >
+                {line.inPantry ? "Already have ✓" : "I already have this"}
+              </button>
+            </div>
+            <p className="muted">
+              from {Array.from(new Set(line.contributions.map((c) => c.recipeName))).join(", ")}
+            </p>
+          </li>
+        ))}
+      </ul>
+
+      {visible.length === 0 && <p>Everything on the list is in your pantry.</p>}
+
+      <p>
+        <Link className="button" to="/frys">
+          Match to Fry’s products
+        </Link>
+      </p>
+    </div>
   );
 }
